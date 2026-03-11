@@ -1,0 +1,25 @@
+# Framework FastAPI
+fastapi
+uvicorn[standard]
+
+# Base de données
+sqlalchemy
+
+# Sécurité et authentification
+# python-jose[cryptography]
+# bcrypt
+
+# Validation de données
+pydantic[email]
+email-validator
+
+python-multipart
+
+# Variables d'environnement
+python-dotenv
+
+# Client HTTP async
+httpx
+
+# Pour serveur en deploiement
+pymongo[srv]
