@@ -1,0 +1,89 @@
+{
+    "_id": "deal_001",
+    "reference": "DL-2026-0001",
+    "title": "Déploiement CRM Europe 2026",
+    "subtitle": "Contrat cadre pour transformation CRM",
+    "clientName": "ACME Corporation",
+    "clientCode": "ACME-001",
+    "industry": "Technology",
+    "country": "France",
+    "city": "Paris",
+    "ownerName": "Alice Martin",
+    "ownerEmail": "alice.martin@company.com",
+    "status": "NEGOTIATION",
+    "subStatus": "LEGAL_REVIEW",
+    "priority": "HIGH",
+    "stage": "proposal",
+    "estimatedRevenue": 120000,
+    "estimatedMargin": 35000,
+    "currency": "EUR",
+    "probability": 70,
+    "expectedCloseDate": "2026-04-15",
+    "contacts": [
+    {
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "jobTitle": "Directeur IT",
+    "email": "jean.dupont@acme.com",
+    "isDecisionMaker": true
+    }
+    ],
+    "products": [
+    {
+    "name": "CRM Enterprise Suite",
+    "quantity": 1,
+    "unitPrice": 90000,
+    "discountPercent": 10,
+    "finalPrice": 81000
+    }
+    ],
+    "financials": {
+    "subtotal": 105000,
+    "discountGlobalPercent": 5,
+    "taxPercent": 20,
+    "totalExclTax": 99750,
+    "totalInclTax": 119700,
+    "estimatedCost": 65000,
+    "expectedProfit": 34750
+    },
+    "commercial": {
+    "needIdentified": true,
+    "competitors": ["Salesforce", "HubSpot"],
+    "painPoints": ["outils dispersés", "manque de reporting"],
+    "proposedSolution": "Suite CRM unifiée",
+    "nextStep": "Validation juridique",
+    "nextStepDate": "2026-03-20"
+    },
+    "delivery": {
+    "deliveryMode": "hybrid",
+    "region": "EMEA",
+    "implementationComplexity": "MEDIUM",
+    "estimatedKickoffDate": "2026-05-05",
+    "estimatedDeliveryWeeks": 10,
+    "requiresTraining": true,
+    "requiresMigration": true
+    },
+    "governance": {
+    "createdBy": "alice.martin@company.com",
+    "approvedByManager": false,
+    "requiresLegalValidation": true,
+    "requiresFinanceValidation": true,
+    "isArchived": false
+    },
+    "tags": ["crm", "enterprise", "france"],
+    "notes": [
+    {
+    "author": "Alice Martin",
+    "content": "Premier échange positif.",
+    "createdAt": "2026-03-11T10:00:00Z"
+    }
+    ],
+    "customFields": {
+    "decisionMaker": "Jean Dupont",
+    "businessUnit": "Europe",
+    "partnerInvolved": true,
+    "partnerName": "TechAlliance"
+    },
+    "createdAt": "2026-03-11T09:30:00Z",
+    "updatedAt": "2026-03-11T15:30:00Z"
+}
