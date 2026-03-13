@@ -2,11 +2,15 @@ from pathlib import Path
 from fastapi import FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
+from routers import template
 
 app = FastAPI()
 
 ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 config = dotenv_values(ENV_PATH)
+
+app.include_router(template.router)
+
 
 # -- MongoDB connection lifecycle --
 

@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Section(BaseModel):
     name: str
@@ -12,21 +12,17 @@ class TemplateModel(BaseModel):
     - which deal fields are visible (visibleFields)
     - how to group them into sections (sections)
     - how to label them (labels)
-
     """
+    model_config = ConfigDict(populate_by_name=True)
 
-    id: Optional[str] = Field(None, alias="_id") 
+    id: Optional[str] = Field(None, alias="_id")
     name: str
     code: str                         # ex: FINANCE_VIEW, COMMERCIAL_VIEW
     description: Optional[str] = None
     isActive: bool = True
-    visibleFields: List[str] = []  # list of permitted fields
-    sections: List[Section] = []   # visual grouping
-    labels: Dict[str, str] = {}    # field name translations
+    visibleFields: List[str] = []
+    sections: List[Section] = []
+    labels: Dict[str, str] = {}
 
-
-    createdAt: datetime = Field(default_factory=datetime.now)
-    updatedAt: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        populate_by_name = True
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

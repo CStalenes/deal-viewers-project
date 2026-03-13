@@ -9,17 +9,27 @@ from bson import ObjectId
 
 class TemplateService:
 
-    def __init__(self, db: Database):
-        self.collection = db["templates"]
+    def __init__(self, db):
+        self.db = db
 
-    def get_all(self) -> list:
-        """Returns all active templates."""
-        return list(self.collection.find({"isActive": True}))
+    def get_all(self):
+        templates = list(self.db["templates"].find())  # Convert ObjectIds to string for FastAPI compatibility
+        for t in templates:
+            t["_id"] = str(t["_id"])
+        return templates
 
-    def get_by_id(self, template_id: str) -> Optional[dict]:
-        """Returns a template by its _id."""
-        return self.collection.find_one({"_id": ObjectId(template_id)})
+    def get_by_id(self, template_id: str):
+        # Retrieve a single template document by its ObjectId
+        return self.db["templates"].find_one({"_id": ObjectId(template_id)})
 
-    def create(self, template_data: dict) -> dict:
-        result = self.collection.insert_one(template_data)
-        return self.collection.find_one({"_id": result.inserted_id})
+    def create(self, template_data: dict):
+        return self.db["templates"].insert_one(template_data)
+
+    def update(self, template_id: str, update_data: dict):
+        return self.db["templates"].update_one(
+            {"_id": ObjectId(template_id)},
+            {"$set": update_data}
+        )
+
+    def delete(self, template_id: str):
+        return self.db["templates"].delete_one({"_id": ObjectId(template_id)})
