@@ -2,7 +2,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
-from routers import template
+from backend.routers import template
 
 app = FastAPI()
 
