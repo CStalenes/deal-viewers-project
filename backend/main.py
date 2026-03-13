@@ -14,7 +14,6 @@ app.include_router(template.router)
 app.include_router(deal.router)
 
 
-# -- MongoDB connection lifecycle --
 
 @app.on_event("startup")
 def startup_db_client():
