@@ -13,12 +13,13 @@ class TemplateService:
         self.db = db
 
     def get_all(self):
-        templates = list(self.db["templates"].find())
+        templates = list(self.db["templates"].find())  # Convert ObjectIds to string for FastAPI compatibility
         for t in templates:
             t["_id"] = str(t["_id"])
         return templates
 
     def get_by_id(self, template_id: str):
+        # Retrieve a single template document by its ObjectId
         return self.db["templates"].find_one({"_id": ObjectId(template_id)})
 
     def create(self, template_data: dict):
