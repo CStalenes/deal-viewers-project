@@ -20,6 +20,5 @@ class TemplateService:
         """Returns a template by its _id."""
         return self.collection.find_one({"_id": ObjectId(template_id)})
 
-    def create(self, template_data: dict) -> dict:
-        result = self.collection.insert_one(template_data)
-        return self.collection.find_one({"_id": result.inserted_id})
+    def create(self, template_data: dict):
+        return self.collection.insert_one(template_data)
