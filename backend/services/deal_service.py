@@ -2,7 +2,7 @@ from bson import ObjectId
 from datetime import datetime
 
 class DealService:
-    def init(self, db):
+    def __init__(self, db):
         self.db = db
         self.collection = self.db["deals"]
 
