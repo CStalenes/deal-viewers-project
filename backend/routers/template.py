@@ -5,8 +5,8 @@ Template routes:
 """
 from fastapi import APIRouter, Request, HTTPException, Body
 
-from models.template import TemplateModel
-from services.template_service import TemplateService
+from backend.models.template import TemplateModel
+from backend.services.template_service import TemplateService
 
 router = APIRouter(prefix="/templates", tags=["templates"])
 
