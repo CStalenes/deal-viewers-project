@@ -7,17 +7,11 @@ class Section(BaseModel):
     fields: List[str]
 
 class TemplateModel(BaseModel):
-    """
-    A display template specifies:
-    - which deal fields are visible (visibleFields)
-    - how to group them into sections (sections)
-    - how to label them (labels)
-    """
     model_config = ConfigDict(populate_by_name=True)
 
     id: Optional[str] = Field(None, alias="_id")
     name: str
-    code: str                         # ex: FINANCE_VIEW, COMMERCIAL_VIEW
+    code: str                        
     description: Optional[str] = None
     isActive: bool = True
     visibleFields: List[str] = []

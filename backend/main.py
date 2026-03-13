@@ -17,14 +17,12 @@ app.include_router(deal.router)
 
 @app.on_event("startup")
 def startup_db_client():
-    # Initialisation du client MongoDB lors du démarrage de l'application
     app.mongodb_client = MongoClient(config["MONGO_URI"])
     app.database = app.mongodb_client[config["DB_NAME"]]
     print(f"Connected to MongoDB — base : {config['DB_NAME']}")
 
 @app.on_event("shutdown")
 def shutdown_db_client():
-    # Fermeture du client MongoDB lors de l'arrêt de l'application
     app.mongodb_client.close()
     print("Connexion MongoDB closed")
 

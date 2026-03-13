@@ -1,10 +1,4 @@
-"""
-Template routes:
-  GET /templates          → lists all active templates
-  GET /templates/{code}   → details of a template by its code
-"""
 from fastapi import APIRouter, Request, HTTPException, Body
-
 from backend.models.template import TemplateModel
 from backend.services.template_service import TemplateService
 
@@ -12,7 +6,6 @@ router = APIRouter(prefix="/templates", tags=["templates"])
 
 @router.get("/")
 def list_templates(request: Request):
-    """ List all actives displaying templates """
     service = TemplateService(request.app.database)
     templates = service.get_all()
     for t in templates:
