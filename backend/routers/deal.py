@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException, Body, Path, Query
 from typing import Optional
+from bson import ObjectId
 from backend.services.deal_service import DealService, apply_template_projection
 
 try:
@@ -66,11 +67,11 @@ def delete_deal(request: Request, id: str = Path(...)):
 def get_projected_deal(request: Request, deal_id: str, templateId: str):
     db = request.app.database
 
-    deal = db.deals.find_one({"_id": deal_id})
+    deal = db["deals"].find_one({"_id": ObjectId(deal_id)})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal non trouvé")
 
-    template = db.templates.find_one({"_id": templateId})
+    template = db["templates"].find_one({"_id": ObjectId(templateId)})
     if not template:
         raise HTTPException(status_code=404, detail="Template non trouvé")
 
