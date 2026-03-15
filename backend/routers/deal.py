@@ -38,7 +38,7 @@ def get_deal(request: Request, id: str = Path(...)):
     
     deal = service.get_by_id(str(query_id))
     if not deal:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
+        raise HTTPException(status_code=404, detail="Deal nnot found")
     
     deal["_id"] = str(deal["_id"])
     return deal
@@ -49,19 +49,19 @@ def update_deal(request: Request, id: str = Path(...), update_data: dict = Body(
     try:
         res = service.update(id, update_data)
     except:
-         raise HTTPException(status_code=400, detail="Erreur lors de la mise à jour")
+         raise HTTPException(status_code=400, detail="Error occurred during update")
          
     if res.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
-    return {"message": "Deal mis à jour avec succès"}
+        raise HTTPException(status_code=404, detail="Deal not found")
+    return {"message": "Deal updated successfully"}
 
 @router.delete("/{id}")
 def delete_deal(request: Request, id: str = Path(...)):
     service = DealService(request.app.database)
     res = service.delete(id)
     if res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
-    return {"message": "Deal supprimé"}
+        raise HTTPException(status_code=404, detail="Deal not found")
+    return {"message": "Deal deleted"}
 
 @router.get("/{deal_id}/view")
 def get_projected_deal(request: Request, deal_id: str, templateId: str):
@@ -71,13 +71,13 @@ def get_projected_deal(request: Request, deal_id: str, templateId: str):
     deal = db["deals"].find_one({"_id": query_deal_id})
     
     if not deal:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
+        raise HTTPException(status_code=404, detail="Deal not found")
 
     query_template_id = ObjectId(templateId) if ObjectId.is_valid(templateId) else templateId
     template = db["templates"].find_one({"_id": query_template_id})
     
     if not template:
-        raise HTTPException(status_code=404, detail="Template non trouvé")
+        raise HTTPException(status_code=404, detail="Template not found")
 
     visible_fields = template.get("visibleFields") or template.get("projectedFields") or []
     
