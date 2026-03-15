@@ -10,7 +10,7 @@
 
     <header class="max-w-4xl mx-auto mb-12 text-center">
         <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Deal Lens</h1>
-        <p class="text-slate-500 mt-2 font-medium">Multi-perspective data projection using the Adapter Pattern</p>
+        <p class="text-slate-500 mt-2 font-medium">Dynamic data adapter for flexible deal reporting</p>
         
         <nav class="mt-6 flex justify-center items-center gap-6 text-sm font-semibold">
             <button onclick="showSection('step-templates')" class="text-slate-600 hover:text-blue-600 transition-colors uppercase tracking-wide">Explorer</button>
@@ -26,7 +26,7 @@
         <section id="step-templates" class="app-section">
             <div class="flex items-center gap-3 mb-6">
                 <span class="flex-none bg-slate-900 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">01</span>
-                <h2 class="text-xl font-bold">Select viewing perspective</h2>
+                <h2 class="text-xl font-bold">Choose a template</h2>
             </div>
             <div id="template-list" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
         </section>
@@ -34,7 +34,7 @@
         <section id="step-deals" class="app-section hidden">
             <div class="flex items-center gap-3 mb-6">
                 <span class="flex-none bg-slate-900 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">02</span>
-                <h2 class="text-xl font-bold">Select deal from pipeline</h2>
+                <h2 class="text-xl font-bold">Select a deal</h2>
             </div>
             
             <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-8 flex flex-wrap gap-4 items-end">
@@ -69,7 +69,7 @@
 
         <section id="section-create-tpl" class="app-section hidden">
             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
-                <h2 class="text-2xl font-bold mb-6">Configure New Perspective</h2>
+                <h2 class="text-2xl font-bold mb-6">Create Template</h2>
                 <form id="template-form" class="space-y-5">
                     <input type="text" id="tpl-name" placeholder="View Name (e.g., Financial Audit)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500" required>
                     <textarea id="tpl-desc" placeholder="What is this view for?" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 h-24"></textarea>
@@ -88,7 +88,7 @@
 
         <section id="section-create-deal" class="app-section hidden">
             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
-                <h2 class="text-2xl font-bold mb-6">Register New Raw Deal</h2>
+                <h2 class="text-2xl font-bold mb-6">New deal entry</h2>
                 <form id="deal-form" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <input type="text" id="d-title" placeholder="Deal Title" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-green-500" required>

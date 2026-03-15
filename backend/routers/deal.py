@@ -4,6 +4,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from backend.services.deal_service import DealService, apply_template_projection
 
+# model import
 try:
     from backend.models.deal import DealModel
 except ImportError:
@@ -24,6 +25,7 @@ def list_deals(
     startDate: Optional[str] = Query(None),
     endDate: Optional[str] = Query(None)
 ):
+    # fetch with optional filters
     service = DealService(request.app.database)
     deals = service.get_all(clientName, startDate, endDate)
     for d in deals:
@@ -34,11 +36,12 @@ def list_deals(
 def get_deal(request: Request, id: str = Path(...)):
     service = DealService(request.app.database)
     
+    # check objectid format
     query_id = ObjectId(id) if ObjectId.is_valid(id) else id
     
     deal = service.get_by_id(str(query_id))
     if not deal:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
+        raise HTTPException(status_code=404, detail="deal not found")
     
     deal["_id"] = str(deal["_id"])
     return deal
@@ -49,36 +52,38 @@ def update_deal(request: Request, id: str = Path(...), update_data: dict = Body(
     try:
         res = service.update(id, update_data)
     except:
-         raise HTTPException(status_code=400, detail="Erreur lors de la mise à jour")
+         raise HTTPException(status_code=400, detail="Error during update")
          
     if res.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
-    return {"message": "Deal mis à jour avec succès"}
+        raise HTTPException(status_code=404, detail="Deal not found")
+    return {"message": "deal updated"}
 
 @router.delete("/{id}")
 def delete_deal(request: Request, id: str = Path(...)):
     service = DealService(request.app.database)
     res = service.delete(id)
     if res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
-    return {"message": "Deal supprimé"}
+        raise HTTPException(status_code=404, detail="Deal not found")
+    return {"message": "Deal deleted"}
 
 @router.get("/{deal_id}/view")
 def get_projected_deal(request: Request, deal_id: str, templateId: str):
+    # logic to apply template to a specific deal
     db = request.app.database
 
     query_deal_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
     deal = db["deals"].find_one({"_id": query_deal_id})
     
     if not deal:
-        raise HTTPException(status_code=404, detail="Deal non trouvé")
+        raise HTTPException(status_code=404, detail="Deal not found")
 
     query_template_id = ObjectId(templateId) if ObjectId.is_valid(templateId) else templateId
     template = db["templates"].find_one({"_id": query_template_id})
     
     if not template:
-        raise HTTPException(status_code=404, detail="Template non trouvé")
+        raise HTTPException(status_code=404, detail="Template not found")
 
+    # get fields from template and project
     visible_fields = template.get("visibleFields") or template.get("projectedFields") or []
     
     deal["_id"] = str(deal["_id"])

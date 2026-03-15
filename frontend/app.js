@@ -5,7 +5,7 @@ function showSection(sectionId) {
     const sections = document.querySelectorAll('.app-section');
     sections.forEach(s => s.classList.add('hidden'));
     
-    // UI fix for smoother transitions
+    // reset transparency for main step
     document.getElementById('step-templates').classList.remove('opacity-40', 'pointer-events-none');
     document.getElementById(sectionId).classList.remove('hidden');
 }
@@ -50,7 +50,7 @@ async function startApp() {
 function handleTemplateSelection(id) {
     currentTemplateId = id;
     
-    // Lock the first step and move to deals
+    // grey out first step and show deals
     document.getElementById('step-templates').classList.add('opacity-40', 'pointer-events-none');
     showSection('step-deals');
     document.getElementById('step-templates').classList.remove('hidden'); 
@@ -63,6 +63,7 @@ async function fetchAvailableDeals() {
     const start = document.getElementById('filter-start')?.value || "";
     const end = document.getElementById('filter-end')?.value || "";
 
+    // Build query params
     let endpoint = `${API_URL}/deals?`;
     if (client) endpoint += `client=${client}&`;
     if (start) endpoint += `startDate=${start}&`;
@@ -101,6 +102,7 @@ async function renderFinalView(dealId) {
         let contentHtml = '<div class="divide-y border-t border-gray-100">';
         
         for (const [key, val] of Object.entries(projectedData)) {
+            // clean up field names for display
             const prettyLabel = key.replace(/\./g, ' > ')
                                  .replace(/([A-Z])/g, ' $1')
                                  .trim();
@@ -119,11 +121,11 @@ async function renderFinalView(dealId) {
     }
 }
 
-// Form Handlers
 document.getElementById('template-form').onsubmit = async (event) => {
     event.preventDefault();
     const tplName = document.getElementById('tpl-name').value;
     
+    // map form to payload
     const newTemplate = {
         name: tplName,
         description: document.getElementById('tpl-desc').value,
@@ -142,8 +144,8 @@ document.getElementById('template-form').onsubmit = async (event) => {
         window.location.reload();
     } else {
         const errorData = await res.json();
-        console.warn("Creation failed. Check payload:", errorData);
-        alert("Validation error (422). Please check the console.");
+        console.warn("Check payload:", errorData);
+        alert("Validation error (422). Check console.");
     }
 };
 
@@ -173,6 +175,7 @@ document.getElementById('deal-form').onsubmit = async (event) => {
 function formatDisplayValue(value, fieldKey = "") {
     if (value === null || value === undefined) return "N/A";
     
+    // handle arrays 
     if (Array.isArray(value)) {
         if (value.length === 0) return "No records found";
         return value.map(item => {
@@ -183,6 +186,7 @@ function formatDisplayValue(value, fieldKey = "") {
         }).join(', ');
     }
     
+    // Formatting for currencies and percentage
     if (typeof value === 'number') {
         const keyLower = fieldKey.toLowerCase();
         if (['tax', 'amount', 'margin', 'revenue', 'total'].some(word => keyLower.includes(word))) {
@@ -195,5 +199,4 @@ function formatDisplayValue(value, fieldKey = "") {
     return value;
 }
 
-// Kickstart
 startApp();

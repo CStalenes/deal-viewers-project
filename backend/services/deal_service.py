@@ -13,19 +13,19 @@ class DealService:
         query = {}
 
         if client_name:
+            # case insensitive search for client
             query["clientName"] = {"$regex": client_name, "$options": "i"}
 
         if start_date or end_date:
             date_query = {}
-            if start_date:
-                date_query["$gte"] = start_date
-            if end_date:
-                date_query["$lte"] = end_date
+            if start_date: date_query["$gte"] = start_date
+            if end_date:   date_query["$lte"] = end_date
             query["createdAt"] = date_query
 
         return list(self.collection.find(query))
 
     def get_by_id(self, deal_id: str):
+        # handle both string and objectId formats
         query_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
         return self.collection.find_one({"_id": query_id})
 
@@ -39,7 +39,7 @@ class DealService:
 
 
 def apply_template_projection(deal: Dict[str, Any], visible_fields: List[str]) -> Dict[str, Any]:
-    
+    # return everything if no field specified
     if not visible_fields:
         return deal
 
@@ -49,6 +49,7 @@ def apply_template_projection(deal: Dict[str, Any], visible_fields: List[str]) -
         projected_deal["_id"] = str(deal["_id"])
 
     for field_path in visible_fields:
+        # manual traversal for nested keys 
         parts = field_path.split('.')
         current_data = deal
         
