@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deal Lens - Adapter Pattern Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen p-6 text-slate-800">
+
+    <header class="max-w-4xl mx-auto mb-12 text-center">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Deal Lens</h1>
+        <p class="text-slate-500 mt-2 font-medium">Dynamic data adapter for flexible deal reporting</p>
+        
+        <nav class="mt-6 flex justify-center items-center gap-6 text-sm font-semibold">
+            <button onclick="showSection('step-templates')" class="text-slate-600 hover:text-blue-600 transition-colors uppercase tracking-wide">Explorer</button>
+            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+            <button onclick="showSection('section-create-tpl')" class="text-slate-600 hover:text-blue-600 transition-colors uppercase tracking-wide">New Template</button>
+            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+            <button onclick="showSection('section-create-deal')" class="text-slate-600 hover:text-blue-600 transition-colors uppercase tracking-wide">New Deal</button>
+        </nav>
+    </header>
+
+    <main class="max-w-4xl mx-auto space-y-12">
+        
+        <section id="step-templates" class="app-section">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="flex-none bg-slate-900 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">01</span>
+                <h2 class="text-xl font-bold">Choose a template</h2>
+            </div>
+            <div id="template-list" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+        </section>
+
+        <section id="step-deals" class="app-section hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="flex-none bg-slate-900 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">02</span>
+                <h2 class="text-xl font-bold">Select a deal</h2>
+            </div>
+            
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-8 flex flex-wrap gap-4 items-end">
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Account Name</label>
+                    <input type="text" id="filter-client" placeholder="Search client..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">From</label>
+                    <input type="date" id="filter-start" class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">To</label>
+                    <input type="date" id="filter-end" class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                </div>
+                <button onclick="fetchAvailableDeals()" class="bg-slate-900 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-600 transition-all">Apply Filter</button>
+            </div>
+
+            <div id="deal-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+
+        <section id="step-view" class="app-section hidden">
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-black text-slate-900">Projected Data</h2>
+                <span class="text-xs font-bold text-blue-600 px-3 py-1 bg-blue-50 rounded-full border border-blue-100 uppercase">Live View</span>
+            </div>
+            <div id="projected-content" class="bg-white rounded-2xl shadow-2xl border border-slate-200 p-8"></div>
+            <button onclick="window.location.reload()" class="mt-8 flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold transition-all group">
+                <span class="group-hover:-translate-x-1 transition-transform">←</span> Reset session
+            </button>
+        </section>
+
+        <section id="section-create-tpl" class="app-section hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                <h2 class="text-2xl font-bold mb-6">Create Template</h2>
+                <form id="template-form" class="space-y-5">
+                    <input type="text" id="tpl-name" placeholder="View Name (e.g., Financial Audit)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500" required>
+                    <textarea id="tpl-desc" placeholder="What is this view for?" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 h-24"></textarea>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase ml-1">Visible fields (comma separated)</label>
+                        <input type="text" id="tpl-fields" placeholder="title, financials.amount, commercial.nextStep" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500" required>
+                    </div>
+                    <label class="flex items-center gap-3 cursor-pointer p-1">
+                        <input type="checkbox" id="tpl-active" class="w-5 h-5 rounded border-slate-300" checked> 
+                        <span class="text-sm font-semibold">Enable immediately</span>
+                    </label>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Save Perspective</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="section-create-deal" class="app-section hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                <h2 class="text-2xl font-bold mb-6">New deal entry</h2>
+                <form id="deal-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <input type="text" id="d-title" placeholder="Deal Title" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-green-500" required>
+                        <input type="text" id="d-client" placeholder="Client Name" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-green-500" required>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 bg-slate-50 rounded-2xl">
+                        <input type="number" id="d-amount" placeholder="Total Amount" class="p-3 border border-slate-200 rounded-xl outline-none focus:border-green-500">
+                        <input type="number" id="d-margin" placeholder="Profit Margin" class="p-3 border border-slate-200 rounded-xl outline-none focus:border-green-500">
+                        <input type="text" id="d-step" placeholder="Next Action" class="p-3 border border-slate-200 rounded-xl outline-none focus:border-green-500">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-black hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">Push to Database</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
