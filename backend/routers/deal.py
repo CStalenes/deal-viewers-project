@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, HTTPException, Body, Path, Query
 from typing import Optional
 from bson import ObjectId
+from bson.errors import InvalidId
 from backend.services.deal_service import DealService, apply_template_projection
 
 try:
@@ -32,11 +33,10 @@ def list_deals(
 @router.get("/{id}")
 def get_deal(request: Request, id: str = Path(...)):
     service = DealService(request.app.database)
-    try:
-        deal = service.get_by_id(id)
-    except:
-        raise HTTPException(status_code=400, detail="Format d'ID invalide")
-        
+    
+    query_id = ObjectId(id) if ObjectId.is_valid(id) else id
+    
+    deal = service.get_by_id(str(query_id))
     if not deal:
         raise HTTPException(status_code=404, detail="Deal non trouvé")
     
@@ -67,15 +67,20 @@ def delete_deal(request: Request, id: str = Path(...)):
 def get_projected_deal(request: Request, deal_id: str, templateId: str):
     db = request.app.database
 
-    deal = db["deals"].find_one({"_id": ObjectId(deal_id)})
+    query_deal_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
+    deal = db["deals"].find_one({"_id": query_deal_id})
+    
     if not deal:
         raise HTTPException(status_code=404, detail="Deal non trouvé")
 
-    template = db["templates"].find_one({"_id": ObjectId(templateId)})
+    query_template_id = ObjectId(templateId) if ObjectId.is_valid(templateId) else templateId
+    template = db["templates"].find_one({"_id": query_template_id})
+    
     if not template:
         raise HTTPException(status_code=404, detail="Template non trouvé")
 
-    visible_fields = template.get("visibleFields", [])
+    visible_fields = template.get("visibleFields") or template.get("projectedFields") or []
+    
     deal["_id"] = str(deal["_id"])
     
     return apply_template_projection(deal, visible_fields)

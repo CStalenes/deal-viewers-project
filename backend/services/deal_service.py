@@ -1,16 +1,15 @@
 from bson import ObjectId
-from datetime import datetime
+from typing import Optional, List, Dict, Any
 
 class DealService:
     def __init__(self, db):
         self.db = db
-        self.collection = self.db["deals"]
+        self.collection = db["deals"]
 
-    def create(self, deal_data: dict):
-        deal_data["createdAt"] = datetime.utcnow().isoformat()
+    def create(self, deal_data: Dict[str, Any]):
         return self.collection.insert_one(deal_data)
 
-    def get_all(self, client_name: str = None, start_date: str = None, end_date: str = None):
+    def get_all(self, client_name: Optional[str] = None, start_date: Optional[str] = None, end_date: Optional[str] = None):
         query = {}
 
         if client_name:
@@ -27,35 +26,41 @@ class DealService:
         return list(self.collection.find(query))
 
     def get_by_id(self, deal_id: str):
-        return self.collection.find_one({"_id": ObjectId(deal_id)})
+        query_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
+        return self.collection.find_one({"_id": query_id})
 
-    def update(self, deal_id: str, update_data: dict):
-        update_data["updatedAt"] = datetime.utcnow().isoformat()
-        return self.collection.update_one(
-            {"_id": ObjectId(deal_id)}, 
-            {"$set": update_data}
-        )
+    def update(self, deal_id: str, update_data: Dict[str, Any]):
+        query_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
+        return self.collection.update_one({"_id": query_id}, {"$set": update_data})
 
-    def delete(self, deal_id: str):
-        return self.collection.delete_one({"_id": ObjectId(deal_id)})
+    def delete(self, deal_id: str): 
+        query_id = ObjectId(deal_id) if ObjectId.is_valid(deal_id) else deal_id
+        return self.collection.delete_one({"_id": query_id})
+
+
+def apply_template_projection(deal: Dict[str, Any], visible_fields: List[str]) -> Dict[str, Any]:
     
+    if not visible_fields:
+        return deal
 
-def apply_template_projection(deal: dict, visible_fields: list):
-    
-    projected_data = {}
+    projected_deal = {}
 
-    for path in visible_fields:
-        parts = path.split('.')
-        current_value = deal
+    if "_id" in deal:
+        projected_deal["_id"] = str(deal["_id"])
+
+    for field_path in visible_fields:
+        parts = field_path.split('.')
+        current_data = deal
         
+        found = True
         for part in parts:
-            if isinstance(current_value, dict):
-                current_value = current_value.get(part)
+            if isinstance(current_data, dict) and part in current_data:
+                current_data = current_data[part]
             else:
-                current_value = None
+                found = False
                 break
         
-        if current_value is not None:
-            projected_data[path] = current_value
+        if found:
+            projected_deal[field_path] = current_data
 
-    return projected_data
+    return projected_deal

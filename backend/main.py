@@ -3,9 +3,18 @@ from fastapi import FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
 from backend.routers import template, deal
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 config = dotenv_values(ENV_PATH)
@@ -29,3 +38,4 @@ def shutdown_db_client():
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Deal Viewers Project!"}
+
